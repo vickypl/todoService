@@ -3,8 +3,8 @@ package todo
 import (
 	"database/sql"
 
-	"github.com/todoService/model"
-	"github.com/todoService/store"
+	"github.com/src/todoService/model"
+	"github.com/src/todoService/store"
 )
 
 const (
@@ -24,7 +24,7 @@ func NewTodoStore(db *sql.DB) store.Todo {
 
 func (st todo) Create(todo *model.Todo) (*model.Todo, error) {
 	todoID := store.GenerateID()
-	_, err := st.db.Exec(insertQuery, todoID, todo.UserID, todo.Title, todo.Priority, todo.Status)
+	_, err := st.db.Exec(insertQuery, todoID, todo.UserID, todo.Title, todo.Discription, todo.Priority, todo.Status)
 	if err != nil {
 		return nil, err
 	}

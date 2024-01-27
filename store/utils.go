@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/todoService/model"
+	"github.com/src/todoService/model"
 )
 
 const (
@@ -15,12 +15,6 @@ const (
 	priority = "priority"
 	status   = "status"
 )
-
-type Error struct {
-	stage   string
-	error   error
-	message string
-}
 
 func GenerateID() int {
 	rand.Seed(time.Now().UnixNano())

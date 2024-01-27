@@ -10,3 +10,9 @@ type Todo struct {
 }
 
 type Filter map[string]string
+
+type Error struct {
+	Stage   string `json:"stage"`
+	Error   error  `json:"error"`
+	Message string `json:"message"`
+}

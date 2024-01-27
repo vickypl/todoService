@@ -1,9 +1,9 @@
 package todo
 
 import (
-	"github.com/todoService/model"
-	"github.com/todoService/service"
-	"github.com/todoService/store"
+	"github.com/src/todoService/model"
+	"github.com/src/todoService/service"
+	"github.com/src/todoService/store"
 )
 
 type todo struct {

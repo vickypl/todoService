@@ -1,6 +1,6 @@
 package service
 
-import "github.com/todoService/model"
+import "github.com/src/todoService/model"
 
 type Todo interface {
 	Create(todo *model.Todo) (*model.Todo, error)
