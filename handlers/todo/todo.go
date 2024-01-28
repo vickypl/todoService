@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/src/todoService/handlers"
 	"github.com/src/todoService/model"
 	"github.com/src/todoService/service"
 )
@@ -18,22 +19,9 @@ func NewHttpHandler(todoSvc service.Todo) TodoHandler {
 	return TodoHandler{todoSvc: todoSvc}
 }
 
-func (th TodoHandler) TodoHandler(res http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodPost:
-		th.CreateHandler(res, req)
-	case http.MethodGet:
-		th.GetHandler(res, req)
-	case http.MethodPut:
-		th.UpdateHandler(res, req)
-	case http.MethodDelete:
-		th.DeleteHandler(res, req)
-	default:
-		http.Error(res, "Method not allowed", http.StatusMethodNotAllowed)
-	}
-}
-
 func (th TodoHandler) CreateHandler(res http.ResponseWriter, req *http.Request) {
+
+	res.Header().Set("Content-Type", "application/json")
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 
@@ -42,19 +30,32 @@ func (th TodoHandler) CreateHandler(res http.ResponseWriter, req *http.Request) 
 	err = json.Unmarshal(reqBody, &todo)
 
 	if err != nil {
-		errStr, _ := json.Marshal(model.Error{Stage: "http", Message: "invalid request body", Error: err})
-		res.Write(errStr)
+		handlers.ErrorResponseWriter(res, model.Error{Stage: "http", Error: err, Message: "Error while unmarshalling"}, http.StatusInternalServerError)
+		return
 	}
 
 	_, err = th.todoSvc.Create(&todo)
 
 	if err != nil {
-		fmt.Println(err)
+		handlers.ErrorResponseWriter(res, model.Error{Stage: "http", Error: err, Message: "Error while creating"}, http.StatusBadRequest)
 		return
 	}
 }
 
 func (th TodoHandler) GetHandler(res http.ResponseWriter, req *http.Request) {
+
+	queryParams := req.URL.Query()
+	filter := model.Filter{
+		"userid": queryParams.Get("userid"),
+	}
+
+	fmt.Print(filter)
+
+	todoList, err := th.todoSvc.Get(filter)
+
+	fmt.Print(todoList)
+	fmt.Print(err)
+
 	res.Write([]byte("Hi Get"))
 }
 

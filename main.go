@@ -10,7 +10,8 @@ import (
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/src/todoService/http/todo"
+	"github.com/gorilla/mux"
+	"github.com/src/todoService/handlers/todo"
 	todoSvc "github.com/src/todoService/service/todo"
 	todoStr "github.com/src/todoService/store/todo"
 )
@@ -46,15 +47,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Connected to the database!")
-
 	todoStore := todoStr.NewTodoStore(db)
 	todoService := todoSvc.NewService(todoStore)
 	todoHttp := todo.NewHttpHandler(todoService)
-	http.HandleFunc("/api", todoHttp.TodoHandler)
+
+	router := mux.NewRouter()
+	router.HandleFunc("/api/create", todoHttp.CreateHandler).Methods("POST")
+	router.HandleFunc("/api/get", todoHttp.CreateHandler).Methods("GET")
+	router.HandleFunc("/api/getById", todoHttp.CreateHandler).Methods("GET")
+	router.HandleFunc("/api/update", todoHttp.CreateHandler).Methods("PUT")
+	router.HandleFunc("/api/delete", todoHttp.CreateHandler).Methods("DELETE")
 
 	// Starting the HTTP server on port 5454.
-	err = http.ListenAndServe(":5454", nil)
+	err = http.ListenAndServe(":5454", router)
 	if err != nil {
 		fmt.Printf("Problem starting server, err %v", err)
 	}
