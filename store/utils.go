@@ -25,15 +25,15 @@ func QueryGenerator(filter model.Filter) (string, error) {
 	query := "select * from todo where "
 
 	if val, exists := filter[userID]; exists {
-		query = query + userID + "=" + val
+		query = query + userID + "=" + "'" + val + "'"
 	} else if val, exists := filter[title]; exists {
-		query = query + title + "=" + val
+		query = query + title + "=" + "'" + val + "'"
 	} else if val, exists := filter[desc]; exists {
-		query = query + desc + "=" + val
+		query = query + desc + "=" + "'" + val + "'"
 	} else if val, exists := filter[priority]; exists {
-		query = query + priority + "=" + val
+		query = query + priority + "=" + "'" + val + "'"
 	} else if val, exists := filter[status]; exists {
-		query = query + status + "=" + val
+		query = query + status + "=" + "'" + val + "'"
 	} else {
 		return "", errors.New("Invalid Filter")
 	}

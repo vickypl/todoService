@@ -2,7 +2,6 @@ package todo
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -44,19 +43,25 @@ func (th TodoHandler) CreateHandler(res http.ResponseWriter, req *http.Request) 
 
 func (th TodoHandler) GetHandler(res http.ResponseWriter, req *http.Request) {
 
+	res.Header().Set("Content-Type", "application/json")
+
 	queryParams := req.URL.Query()
-	filter := model.Filter{
-		"userid": queryParams.Get("userid"),
+
+	filter, err := handlers.ValidateFilters(queryParams)
+	if err != nil {
+		handlers.ErrorResponseWriter(res, model.Error{Stage: "http", Error: err, Message: "Invalid Filter Error"}, http.StatusBadRequest)
+		return
 	}
 
-	fmt.Print(filter)
-
 	todoList, err := th.todoSvc.Get(filter)
+	if err != nil {
+		handlers.ErrorResponseWriter(res, model.Error{Stage: "http", Error: err, Message: "Error while unmarshalling"}, http.StatusInternalServerError)
+		return
+	}
 
-	fmt.Print(todoList)
-	fmt.Print(err)
+	handlers.ResponseWrapper(res, todoList)
 
-	res.Write([]byte("Hi Get"))
+	return
 }
 
 func (th TodoHandler) GetByIDHandler(res http.ResponseWriter, req *http.Request) {

@@ -45,13 +45,13 @@ func (st todo) Get(filter model.Filter) ([]*model.Todo, error) {
 	}
 
 	for row.Next() {
-		var todo *model.Todo
+		var todo model.Todo
 		err := row.Scan(&todo.Id, &todo.UserID, &todo.Title, &todo.Discription, &todo.Priority, &todo.Status)
 		if err != nil {
 			return nil, err
 		}
 
-		todoList = append(todoList, todo)
+		todoList = append(todoList, &todo)
 	}
 
 	return todoList, nil

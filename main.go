@@ -53,10 +53,10 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/api/create", todoHttp.CreateHandler).Methods("POST")
-	router.HandleFunc("/api/get", todoHttp.CreateHandler).Methods("GET")
-	router.HandleFunc("/api/getById", todoHttp.CreateHandler).Methods("GET")
-	router.HandleFunc("/api/update", todoHttp.CreateHandler).Methods("PUT")
-	router.HandleFunc("/api/delete", todoHttp.CreateHandler).Methods("DELETE")
+	router.HandleFunc("/api/get", todoHttp.GetHandler).Methods("GET")
+	router.HandleFunc("/api/getById", todoHttp.GetByIDHandler).Methods("GET")
+	router.HandleFunc("/api/update", todoHttp.UpdateHandler).Methods("PUT")
+	router.HandleFunc("/api/delete", todoHttp.DeleteHandler).Methods("DELETE")
 
 	// Starting the HTTP server on port 5454.
 	err = http.ListenAndServe(":5454", router)
