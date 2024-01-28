@@ -11,7 +11,7 @@ const (
 	insertQuery = "insert into todo (id, userid, title, discription, priority, status) values (?, ?, ?, ?, ?, ?);"
 	updateQuery = "update todo set userid=?, title=?, discription=?, priority=?, status=? where id=?;"
 	selectQuery = "select * from todo where id=?;"
-	deleteQuery = "delete * from todo where id=?;"
+	deleteQuery = "delete from todo where id=?;"
 )
 
 type todo struct {

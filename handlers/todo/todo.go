@@ -105,5 +105,17 @@ func (th TodoHandler) UpdateHandler(res http.ResponseWriter, req *http.Request) 
 }
 
 func (th TodoHandler) DeleteHandler(res http.ResponseWriter, req *http.Request) {
-	res.Write([]byte("Hi Delete"))
+	res.Header().Set("Content-Type", "application/json")
+
+	queryParams := req.URL.Query()
+
+	id := queryParams.Get("id")
+
+	err := th.todoSvc.Delete(id)
+	if err != nil {
+		handlers.ErrorResponseWriter(res, model.Error{Stage: "http", Error: err, Message: "Error while deleting todo"}, http.StatusInternalServerError)
+		return
+	}
+
+	handlers.ResponseWrapper(res, nil)
 }
