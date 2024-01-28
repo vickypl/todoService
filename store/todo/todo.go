@@ -9,7 +9,7 @@ import (
 
 const (
 	insertQuery = "insert into todo (id, userid, title, discription, priority, status) values (?, ?, ?, ?, ?, ?);"
-	updateQuery = "update todo set title=?, discription=?, priority=?, status=? where id=?;"
+	updateQuery = "update todo set userid=?, title=?, discription=?, priority=?, status=? where id=?;"
 	selectQuery = "select * from todo where id=?;"
 	deleteQuery = "delete * from todo where id=?;"
 )
@@ -24,7 +24,7 @@ func NewTodoStore(db *sql.DB) store.Todo {
 
 func (st todo) Create(todo *model.Todo) (*model.Todo, error) {
 	todoID := store.GenerateID()
-	_, err := st.db.Exec(insertQuery, todoID, todo.UserID, todo.Title, todo.Discription, todo.Priority, todo.Status)
+	_, err := st.db.Exec(insertQuery, todo.UserID, todo.Title, todo.Discription, todo.Priority, todo.Status, todoID)
 	if err != nil {
 		return nil, err
 	}
@@ -59,23 +59,28 @@ func (st todo) Get(filter model.Filter) ([]*model.Todo, error) {
 
 func (st todo) GetByID(todoID string) (*model.Todo, error) {
 	row := st.db.QueryRow(selectQuery, todoID)
-	var todo *model.Todo
+	var todo model.Todo
 
 	err := row.Scan(&todo.Id, &todo.UserID, &todo.Title, &todo.Discription, &todo.Priority, &todo.Status)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	return &todo, nil
 }
 
 func (st todo) Update(todo *model.Todo) (*model.Todo, error) {
-	_, err := st.db.Exec(updateQuery, todo.UserID, todo.Title, todo.Priority, todo.Status, todo.Id)
+	_, err := st.db.Exec(updateQuery, todo.UserID, todo.Title, todo.Discription, todo.Priority, todo.Status, todo.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	updatedTodo, err := st.GetByID(todo.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedTodo, nil
 }
 
 func (st todo) Delete(todoID string) error {

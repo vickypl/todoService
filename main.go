@@ -54,7 +54,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/create", todoHttp.CreateHandler).Methods("POST")
 	router.HandleFunc("/api/get", todoHttp.GetHandler).Methods("GET")
-	router.HandleFunc("/api/getById", todoHttp.GetByIDHandler).Methods("GET")
+	router.HandleFunc("/api/getbyid", todoHttp.GetByIDHandler).Methods("GET")
 	router.HandleFunc("/api/update", todoHttp.UpdateHandler).Methods("PUT")
 	router.HandleFunc("/api/delete", todoHttp.DeleteHandler).Methods("DELETE")
 

@@ -27,12 +27,17 @@ func (td todo) GetByID(todoID string) (*model.Todo, error) {
 }
 
 func (td todo) Update(todo *model.Todo) (*model.Todo, error) {
-	todo, err := td.GetByID(todo.Id)
+	_, err := td.GetByID(todo.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	return td.todoStore.Update(todo)
+	UpdatedTodo, err := td.todoStore.Update(todo)
+	if err != nil {
+		return nil, err
+	}
+
+	return UpdatedTodo, nil
 }
 
 func (td todo) Delete(todoID string) error {
