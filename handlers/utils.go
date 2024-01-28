@@ -22,7 +22,7 @@ func ResponseWrapper(res http.ResponseWriter, data []*model.Todo) {
 
 	result, err := json.Marshal(resp{Data: data})
 	if err != nil {
-		ErrorResponseWriter(res, model.Error{Error: err}, http.StatusInternalServerError)
+		ErrorResponseWriter(res, model.Error{Stage: "http", Error: err, Message: "Marshalling error"}, http.StatusInternalServerError)
 		return
 	}
 
