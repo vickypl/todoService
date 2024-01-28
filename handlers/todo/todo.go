@@ -33,12 +33,14 @@ func (th TodoHandler) CreateHandler(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	_, err = th.todoSvc.Create(&todo)
+	result, err := th.todoSvc.Create(&todo)
 
 	if err != nil {
 		handlers.ErrorResponseWriter(res, model.Error{Stage: "http", Error: err, Message: "Error while creating"}, http.StatusBadRequest)
 		return
 	}
+
+	handlers.ResponseWrapper(res, []*model.Todo{result})
 }
 
 func (th TodoHandler) GetHandler(res http.ResponseWriter, req *http.Request) {

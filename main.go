@@ -80,7 +80,7 @@ func getEnvVars(filePath string) (map[string]string, error) {
 		line := scanner.Text()
 		row := strings.Split(line, "=")
 		if len(row) == 2 {
-			envVars[row[0]] = row[1]
+			envVars[strings.TrimSpace(row[0])] = strings.TrimSpace(row[1])
 		}
 	}
 
