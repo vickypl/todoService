@@ -20,7 +20,7 @@ import (
 func main() {
 	fmt.Println("Server started at: 5454")
 
-	envVars, err := getEnvVars("configs\\.local.env")
+	envVars, err := getEnvVars("configs")
 
 	if err != nil {
 		fmt.Printf("Error in reading env, err: %v", err)
@@ -67,7 +67,17 @@ func main() {
 }
 
 func getEnvVars(filePath string) (map[string]string, error) {
-	file, err := os.Open(filePath)
+	envFile := "\\.env"
+	localEnvFile := "\\.local.env"
+
+	file, err := os.Open(filePath + envFile)
+	if err != nil {
+		file, err = os.Open(filePath + localEnvFile)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if err != nil {
 		return nil, err
 	}
