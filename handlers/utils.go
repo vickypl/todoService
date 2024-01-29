@@ -3,11 +3,19 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 
 	"github.com/src/todoService/model"
 )
+
+func JWTMiddlewareAuth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		next.ServeHTTP(w, r)
+		fmt.Print("JWT Auth  will be added")
+	})
+}
 
 func ErrorResponseWriter(res http.ResponseWriter, errorMessage model.Error, errorCode int) {
 	errStr, _ := json.Marshal(errorMessage)
