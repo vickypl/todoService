@@ -11,6 +11,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"github.com/src/todoService/handlers"
 	"github.com/src/todoService/handlers/todo"
 	todoSvc "github.com/src/todoService/service/todo"
 	todoStr "github.com/src/todoService/store/todo"
@@ -19,7 +20,7 @@ import (
 func main() {
 	fmt.Println("Server started at: 5454")
 
-	envVars, err := getEnvVars("configs\\.local.env")
+	envVars, err := getEnvVars("configs")
 
 	if err != nil {
 		fmt.Printf("Error in reading env, err: %v", err)
@@ -52,11 +53,11 @@ func main() {
 	todoHttp := todo.NewHttpHandler(todoService)
 
 	router := mux.NewRouter()
-	router.HandleFunc("/api/create", todoHttp.CreateHandler).Methods("POST")
-	router.HandleFunc("/api/get", todoHttp.GetHandler).Methods("GET")
-	router.HandleFunc("/api/getbyid", todoHttp.GetByIDHandler).Methods("GET")
-	router.HandleFunc("/api/update", todoHttp.UpdateHandler).Methods("PUT")
-	router.HandleFunc("/api/delete", todoHttp.DeleteHandler).Methods("DELETE")
+	router.Handle("/api/create", handlers.JWTMiddlewareAuth(http.HandlerFunc(todoHttp.CreateHandler))).Methods("POST")
+	router.Handle("/api/get", handlers.JWTMiddlewareAuth(http.HandlerFunc(todoHttp.GetHandler))).Methods("GET")
+	router.Handle("/api/getbyid", handlers.JWTMiddlewareAuth(http.HandlerFunc(todoHttp.GetByIDHandler))).Methods("GET")
+	router.Handle("/api/update", handlers.JWTMiddlewareAuth(http.HandlerFunc(todoHttp.UpdateHandler))).Methods("PUT")
+	router.Handle("/api/delete", handlers.JWTMiddlewareAuth(http.HandlerFunc(todoHttp.DeleteHandler))).Methods("DELETE")
 
 	// Starting the HTTP server on port 5454.
 	err = http.ListenAndServe(":5454", router)
@@ -66,7 +67,17 @@ func main() {
 }
 
 func getEnvVars(filePath string) (map[string]string, error) {
-	file, err := os.Open(filePath)
+	envFile := "\\.env"
+	localEnvFile := "\\.local.env"
+
+	file, err := os.Open(filePath + envFile)
+	if err != nil {
+		file, err = os.Open(filePath + localEnvFile)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if err != nil {
 		return nil, err
 	}
